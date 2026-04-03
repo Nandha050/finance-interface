@@ -15,7 +15,7 @@ const DialogOverlay = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Overlay
     ref={ref}
-    className={cn('fixed inset-0 z-50 bg-[#020817]/75 backdrop-blur-sm', className)}
+    className={cn('fixed inset-0 z-50 bg-[#020817]/65 backdrop-blur-sm', className)}
     {...props}
   />
 ))
@@ -30,13 +30,13 @@ const DialogContent = React.forwardRef<
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        'fixed left-1/2 top-1/2 z-50 w-[calc(100%-1.25rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[#233766] bg-[linear-gradient(180deg,#0D1B43_0%,#091634_100%)] p-6 shadow-panel duration-200',
+        'fixed left-1/2 top-1/2 z-50 w-[calc(100%-1.25rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[var(--surface-border)] bg-[var(--surface-1)] p-4 shadow-panel duration-200 sm:p-6',
         className,
       )}
       {...props}
     >
       {children}
-      <DialogPrimitive.Close className="absolute right-4 top-4 rounded-md p-1 text-[#8EA2D5] transition hover:bg-[#152550] hover:text-[#E9EFFF]">
+      <DialogPrimitive.Close className="absolute right-3 top-3 rounded-md p-1 text-[var(--text-muted)] transition hover:bg-[var(--btn-secondary-bg)] hover:text-[var(--text-primary)] sm:right-4 sm:top-4">
         <X className="h-4 w-4" />
         <span className="sr-only">Close</span>
       </DialogPrimitive.Close>
@@ -61,7 +61,7 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Title
     ref={ref}
-    className={cn('font-display text-lg font-semibold text-[#ECF2FF]', className)}
+    className={cn('font-display text-lg font-semibold text-[var(--text-primary)]', className)}
     {...props}
   />
 ))
@@ -73,7 +73,7 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn('text-sm text-[#8FA3D8]', className)}
+    className={cn('text-sm text-[var(--text-muted)]', className)}
     {...props}
   />
 ))

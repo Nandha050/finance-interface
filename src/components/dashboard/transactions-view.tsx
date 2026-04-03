@@ -84,22 +84,23 @@ export function TransactionsView({
     <div className="space-y-4 sm:space-y-5 lg:space-y-6">
       <section className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
-          <h1 className="font-display text-[34px] leading-none text-[#F0F4FF] sm:text-[42px]">Transactions</h1>
-          <p className="mt-2 max-w-xl text-sm text-[#8EA2D6] sm:text-base">
+          <h1 className="font-display text-[2.1rem] leading-none text-[var(--text-primary)] sm:text-[42px]">Transactions</h1>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--text-muted)] sm:text-base">
             Detailed log of architectural resource allocation.
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <div className="rounded-2xl border border-[#203766] bg-[#0C1A40] px-4 py-3">
-            <p className="text-[10px] uppercase tracking-[0.12em] text-[#7F95CB]">Total Inflow</p>
-            <p className="mt-1 text-[34px] font-semibold leading-none text-[#E8EEFF]">
+          <div className="rounded-2xl border border-[#203766] bg-[#0C1A40] px-3 py-2.5 sm:px-4 sm:py-3">
+            <p className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Total Inflow</p>
+            <p className="mt-1 text-[1.85rem] font-semibold leading-none text-[#9FB3FF] sm:text-[34px]">
               {formatCurrency(totalInflow)}
             </p>
           </div>
-          <div className="rounded-2xl border border-[#203766] bg-[#0C1A40] px-4 py-3">
-            <p className="text-[10px] uppercase tracking-[0.12em] text-[#7F95CB]">Net Flow</p>
-            <p className="mt-1 text-[34px] font-semibold leading-none text-[#9FB3FF]">
+          
+          <div className="rounded-2xl border border-[#203766] bg-[#0C1A40] px-3 py-2.5 sm:px-4 sm:py-3">
+            <p className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Net Flow</p>
+            <p className="mt-1 text-[1.85rem] font-semibold leading-none text-[#9FB3FF] sm:text-[34px]">
               {formatCurrency(netFlow)}
             </p>
           </div>
@@ -149,17 +150,19 @@ export function TransactionsView({
             </div>
 
             <div className="flex flex-wrap items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button size="sm" variant="secondary" className="gap-2">
-                    <Download className="h-3.5 w-3.5" /> Export
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={onExportCSV}>Export as CSV</DropdownMenuItem>
-                  <DropdownMenuItem onClick={onExportJSON}>Export as JSON</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              {role === 'admin' && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button size="sm" variant="secondary" className="gap-2">
+                      <Download className="h-3.5 w-3.5" /> Export
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem onClick={onExportCSV}>Export as CSV</DropdownMenuItem>
+                    <DropdownMenuItem onClick={onExportJSON}>Export as JSON</DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
 
               {role === 'admin' && (
                 <Button size="sm" className="gap-2" onClick={onAddTransaction}>
@@ -184,10 +187,10 @@ export function TransactionsView({
             />
           ) : (
             <>
-              <div className="hidden overflow-hidden rounded-xl border border-[#1C2F5E] md:block">
+              <div className="hidden overflow-hidden rounded-xl border border-[var(--surface-border)] md:block">
                 <table className="w-full border-collapse text-left text-sm">
                   <thead>
-                    <tr className="bg-[#0F1E47] text-xs uppercase tracking-[0.12em] text-[#8298CC]">
+                    <tr className="bg-[var(--surface-2)] text-xs uppercase tracking-[0.12em] text-[var(--text-soft)]">
                       <th className="px-4 py-3 font-medium">Date</th>
                       <th className="px-4 py-3 font-medium">Description</th>
                       <th className="px-4 py-3 font-medium">Category</th>
@@ -198,11 +201,11 @@ export function TransactionsView({
                   </thead>
                   <tbody>
                     {currentRows.map((transaction) => (
-                      <tr key={transaction.id} className="border-t border-[#162A56] text-[#D7E2FF] hover:bg-[#0C1B44]">
-                        <td className="px-4 py-3 text-[#A8B7E2]">{formatDate(transaction.date)}</td>
+                      <tr key={transaction.id} className="border-t border-[var(--surface-border)] text-[var(--text-primary)] hover:bg-[var(--surface-2)]">
+                        <td className="px-4 py-3 text-[var(--text-muted)]">{formatDate(transaction.date)}</td>
                         <td className="px-4 py-3">
-                          <p className="font-medium text-[#E9F0FF]">{transaction.description}</p>
-                          <p className="mt-0.5 text-xs text-[#8197CB]">{transaction.note || transaction.category}</p>
+                          <p className="font-medium text-[var(--text-primary)]">{transaction.description}</p>
+                          <p className="mt-0.5 text-xs text-[var(--text-muted)]">{transaction.note || transaction.category}</p>
                         </td>
                         <td className="px-4 py-3">
                           <Badge variant="neutral">{transaction.category}</Badge>
@@ -255,12 +258,12 @@ export function TransactionsView({
                     key={transaction.id}
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="rounded-xl border border-[#1C2F5E] bg-[#0C1A40] p-3"
+                    className="rounded-xl border border-[var(--surface-border)] bg-[var(--surface-2)] p-3"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="font-medium text-[#E9F0FF]">{transaction.description}</p>
-                        <p className="mt-1 text-xs text-[#8197CB]">{formatDate(transaction.date)}</p>
+                        <p className="font-medium text-[var(--text-primary)]">{transaction.description}</p>
+                        <p className="mt-1 text-xs text-[var(--text-muted)]">{formatDate(transaction.date)}</p>
                       </div>
                       <p
                         className={`font-semibold ${
@@ -293,7 +296,7 @@ export function TransactionsView({
                 ))}
               </div>
 
-              <div className="mt-4 flex flex-col gap-3 text-sm text-[#8CA2D7] sm:flex-row sm:items-center sm:justify-between">
+              <div className="mt-4 flex flex-col gap-3 text-sm text-[var(--text-muted)] sm:flex-row sm:items-center sm:justify-between">
                 <p>
                   Showing {Math.min(start + 1, filteredTransactions.length)}-{Math.min(start + itemsPerPage, filteredTransactions.length)} of{' '}
                   {filteredTransactions.length} records
@@ -357,11 +360,15 @@ export function TransactionsView({
           <CardContent className="p-6">
             <CardTitle className="text-white">Resource Analysis</CardTitle>
             <p className="mt-2 text-sm text-[#E9EEFF]">
-              Generate a comprehensive export for board-level review.
+              {role === 'admin'
+                ? 'Generate a comprehensive export for board-level review.'
+                : 'Resource performance is available in read-only mode for viewer access.'}
             </p>
-            <Button variant="secondary" className="mt-6 w-full bg-white text-[#253E90] hover:bg-[#EEF2FF]">
-              Export Blueprint
-            </Button>
+            {role === 'admin' && (
+              <Button variant="secondary" className="mt-6 w-full bg-white text-[#253E90] hover:bg-[#EEF2FF]">
+                Export Blueprint
+              </Button>
+            )}
           </CardContent>
         </Card>
       </div>

@@ -8,10 +8,14 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: 'border-[#2C3F72] bg-[#13224A] text-[#B9C7F7]',
-        income: 'border-[#2E5B38] bg-[#143322] text-[#9BFFA9]',
-        expense: 'border-[#6B2A45] bg-[#2B1730] text-[#FF9BB6]',
-        neutral: 'border-[#2A3B68] bg-[#101C40] text-[#8FA4DC]',
+        default:
+          'border-[var(--badge-default-border)] bg-[var(--badge-default-bg)] text-[var(--badge-default-text)]',
+        income:
+          'border-[var(--badge-income-border)] bg-[var(--badge-income-bg)] text-[var(--badge-income-text)]',
+        expense:
+          'border-[var(--badge-expense-border)] bg-[var(--badge-expense-bg)] text-[var(--badge-expense-text)]',
+        neutral:
+          'border-[var(--badge-neutral-border)] bg-[var(--badge-neutral-bg)] text-[var(--badge-neutral-text)]',
       },
     },
     defaultVariants: {

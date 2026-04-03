@@ -40,10 +40,10 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
     <div className="grid gap-4 xl:grid-cols-[2fr,1fr]">
       <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
         <Card>
-          <CardHeader className="flex flex-row items-start justify-between gap-3 pb-2">
+          <CardHeader className="flex flex-col items-start justify-between gap-3 pb-2 sm:flex-row">
             <div>
               <CardTitle>Performance Overview</CardTitle>
-              <CardDescription>Equity and liquidity growth over selected months</CardDescription>
+              <CardDescription className="text-sm leading-6">Equity and liquidity growth over selected months</CardDescription>
             </div>
             <div className="flex items-center rounded-xl border border-[#1F3364] bg-[#0D1A40] p-1">
               {PERIODS.map((item) => (
@@ -51,7 +51,7 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
                   key={item.value}
                   type="button"
                   onClick={() => setPeriod(item.value)}
-                  className={`rounded-lg px-3 py-1 text-xs font-semibold transition ${
+                  className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold transition sm:px-3 sm:text-xs ${
                     period === item.value
                       ? 'bg-[#6E86FF] text-[#081539]'
                       : 'text-[#91A6D8] hover:text-[#E1E9FF]'
@@ -63,7 +63,7 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
             </div>
           </CardHeader>
           <CardContent className="pt-4">
-            <div className="h-[280px] w-full sm:h-[320px]">
+            <div className="h-[220px] w-full sm:h-[320px]">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={visibleTrend} margin={{ top: 10, right: 0, bottom: 0, left: -20 }}>
                   <defs>
@@ -105,10 +105,10 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
         <Card className="h-full">
           <CardHeader className="pb-1">
             <CardTitle>Spending by Category</CardTitle>
-            <CardDescription>Structural distribution of capital</CardDescription>
+            <CardDescription className="text-sm leading-6">Structural distribution of capital</CardDescription>
           </CardHeader>
           <CardContent className="pt-3">
-            <div className="mx-auto h-[220px] w-[220px]">
+            <div className="mx-auto h-[180px] w-[180px] sm:h-[220px] sm:w-[220px]">
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
                   <Pie
@@ -137,23 +137,23 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
             </div>
 
             <div className="-mt-2 text-center">
-              <p className="text-[30px] font-semibold leading-none text-[#F0F4FF]">
+              <p className="text-[2rem] font-semibold leading-none text-[var(--text-primary)] sm:text-[30px]">
                 {formatCurrencyCompact(totalSpending)}
               </p>
-              <p className="mt-1 text-[11px] uppercase tracking-[0.12em] text-[#7D93C8]">Total</p>
+              <p className="mt-1 text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)] sm:text-[11px]">Total</p>
             </div>
 
-            <div className="mt-5 space-y-2">
+            <div className="mt-4 space-y-1.5 sm:mt-5 sm:space-y-2">
               {categoryData.slice(0, 3).map((item, index) => (
-                <div key={item.category} className="flex items-center justify-between text-sm">
-                  <p className="flex items-center gap-2 text-[#C6D3F7]">
+                <div key={item.category} className="flex items-center justify-between text-[0.96rem] sm:text-sm">
+                  <p className="flex items-center gap-2 text-[var(--text-muted)]">
                     <span
                       className="h-2.5 w-2.5 rounded-full"
                       style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }}
                     />
                     {item.category}
                   </p>
-                  <p className="font-medium text-[#E8EEFF]">{Math.round(item.share)}%</p>
+                  <p className="font-medium text-[var(--text-primary)]">{Math.round(item.share)}%</p>
                 </div>
               ))}
             </div>

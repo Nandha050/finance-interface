@@ -20,6 +20,45 @@
   --border: 223 45% 23%;
   --input: 223 52% 22%;
   --ring: 227 88% 70%;
+
+  --surface-1: linear-gradient(180deg, #0b1636 0%, #09142f 100%);
+  --surface-2: #0d1a40;
+  --surface-3: #0a1535;
+  --surface-border: #1f3363;
+  --surface-border-soft: #1a2d5a;
+  --text-primary: #eaf0ff;
+  --text-muted: #8ea2d6;
+  --text-soft: #7f95cb;
+
+  --btn-primary-bg: #7d92ff;
+  --btn-primary-bg-hover: #8ba0ff;
+  --btn-primary-fg: #081237;
+  --btn-secondary-bg: #152246;
+  --btn-secondary-bg-hover: #1d2e59;
+  --btn-secondary-fg: #d4ddff;
+  --btn-secondary-border: #22335f;
+  --btn-ghost-fg: #b8c4ee;
+  --btn-ghost-hover-bg: #122047;
+
+  --field-bg: #0a1535;
+  --field-bg-soft: #0d1a3f;
+  --field-border: #1d2e59;
+  --field-text: #d8e3ff;
+  --field-placeholder: #6b81b5;
+  --field-focus: #5775c8;
+
+  --badge-default-bg: #13224a;
+  --badge-default-border: #2c3f72;
+  --badge-default-text: #b9c7f7;
+  --badge-neutral-bg: #101c40;
+  --badge-neutral-border: #2a3b68;
+  --badge-neutral-text: #8fa4dc;
+  --badge-income-bg: #143322;
+  --badge-income-border: #2e5b38;
+  --badge-income-text: #9bffa9;
+  --badge-expense-bg: #2b1730;
+  --badge-expense-border: #6b2a45;
+  --badge-expense-text: #ff9bb6;
 }
 
 .light {
@@ -38,6 +77,45 @@
   --border: 220 34% 84%;
   --input: 220 35% 90%;
   --ring: 228 89% 60%;
+
+  --surface-1: linear-gradient(180deg, #ffffff 0%, #f8fafe 100%);
+  --surface-2: #f5f7fb;
+  --surface-3: #ffffff;
+  --surface-border: #d7dfeb;
+  --surface-border-soft: #d9e0ec;
+  --text-primary: #1d2a44;
+  --text-muted: #6f7b92;
+  --text-soft: #8492ab;
+
+  --btn-primary-bg: #2f66f6;
+  --btn-primary-bg-hover: #3f73ff;
+  --btn-primary-fg: #ffffff;
+  --btn-secondary-bg: #eef2f8;
+  --btn-secondary-bg-hover: #e6ebf4;
+  --btn-secondary-fg: #3b4d6a;
+  --btn-secondary-border: #d8e0ee;
+  --btn-ghost-fg: #61718d;
+  --btn-ghost-hover-bg: #e8edf6;
+
+  --field-bg: #f8fafe;
+  --field-bg-soft: #ffffff;
+  --field-border: #d8e0ed;
+  --field-text: #2d3d5b;
+  --field-placeholder: #8a97ad;
+  --field-focus: #2f66f6;
+
+  --badge-default-bg: #ebf0fb;
+  --badge-default-border: #d5dff0;
+  --badge-default-text: #5f7292;
+  --badge-neutral-bg: #eef3fc;
+  --badge-neutral-border: #d8e1f2;
+  --badge-neutral-text: #667992;
+  --badge-income-bg: #e9f9ef;
+  --badge-income-border: #c6e8d3;
+  --badge-income-text: #2a8548;
+  --badge-expense-bg: #fbecef;
+  --badge-expense-border: #efc6d0;
+  --badge-expense-text: #b64b69;
 }
 
 @layer base {
@@ -49,12 +127,22 @@
   body,
   #root {
     min-height: 100%;
+    width: 100%;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
     margin: 0;
     background-attachment: fixed;
+    overflow-x: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  * {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   ::selection {
@@ -63,19 +151,23 @@
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 0;
+  height: 0;
+  display: none;
 }
 
 ::-webkit-scrollbar-track {
-  background: rgba(10, 22, 54, 0.65);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(107, 132, 212, 0.65);
-  border-radius: 999px;
+  background: transparent;
 }
 
 .light body {
-  background: radial-gradient(circle at 20% 10%, #d9e4ff 0%, #f4f7ff 38%, #eef2ff 100%);
+  background: linear-gradient(180deg, #f7f8fb 0%, #f0f3f8 100%);
+}
+
+.light .bg-noise {
+  background-image: linear-gradient(180deg, #f7f8fb 0%, #f0f3f8 100%);
 }

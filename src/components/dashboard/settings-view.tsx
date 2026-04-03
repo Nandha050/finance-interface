@@ -16,8 +16,8 @@ export function SettingsView({ role, theme, onThemeChange, onResetData }: Settin
   return (
     <div className="space-y-4 sm:space-y-5 lg:space-y-6">
       <section>
-        <h1 className="font-display text-[34px] leading-none text-[#F0F4FF] sm:text-[42px]">Settings</h1>
-        <p className="mt-2 max-w-xl text-sm text-[#8EA2D6] sm:text-base">
+        <h1 className="font-display text-[2.1rem] leading-none text-[var(--text-primary)] sm:text-[42px]">Settings</h1>
+        <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--text-muted)] sm:text-base">
           Manage interface preferences and local dashboard behavior.
         </p>
       </section>

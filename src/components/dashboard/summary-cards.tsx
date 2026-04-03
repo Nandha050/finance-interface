@@ -47,7 +47,7 @@ export function SummaryCards({ metrics, monthOverMonth }: SummaryCardsProps) {
   ]
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid gap-3 sm:grid-cols-2 sm:gap-4 xl:grid-cols-4">
       {cards.map((card, index) => (
         <motion.div
           key={card.title}
@@ -57,20 +57,20 @@ export function SummaryCards({ metrics, monthOverMonth }: SummaryCardsProps) {
           whileHover={{ y: -3 }}
         >
           <Card className="h-full">
-            <CardHeader className="pb-3">
+            <CardHeader className="pb-2">
               <div className="flex items-start justify-between gap-3">
-                <div className={`grid h-10 w-10 place-items-center rounded-xl ${card.accent}`}>
-                  <card.icon className="h-4 w-4" />
+                <div className={`grid h-9 w-9 place-items-center rounded-xl sm:h-10 sm:w-10 ${card.accent}`}>
+                  <card.icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </div>
-                <p className={`text-xs font-semibold ${card.trendColor}`}>
+                <p className={`text-[11px] font-semibold sm:text-xs ${card.trendColor}`}>
                   {formatPercent(card.trend)}
                 </p>
               </div>
             </CardHeader>
             <CardContent className="pt-0">
-              <p className="text-[11px] uppercase tracking-[0.12em] text-[#7E93C8]">{card.title}</p>
-              <CardTitle className="mt-1.5 text-[30px] leading-none sm:text-[28px]">{card.value}</CardTitle>
-              <div className="mt-4 h-1.5 w-2/3 rounded-full bg-[#1B2F61]">
+              <p className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)] sm:text-[11px]">{card.title}</p>
+              <CardTitle className="mt-1.5 text-[2rem] leading-none sm:text-[28px]">{card.value}</CardTitle>
+              <div className="mt-3 h-1.5 w-2/3 rounded-full bg-[#1B2F61]">
                 <div
                   className="h-full rounded-full bg-gradient-to-r from-[#8AA4FF] to-[#C6D3FF]"
                   style={{ width: `${Math.min(Math.max(Math.abs(card.trend) * 5, 20), 100)}%` }}

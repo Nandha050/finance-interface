@@ -13,7 +13,7 @@ import { Dialog, DialogContent } from '@/components/ui/dialog'
 import { CATEGORIES } from '@/data/mock-transactions'
 import { applyTransactionFilters } from '@/lib/analytics'
 import { downloadTextFile, formatDate } from '@/lib/format'
-import { uid } from '@/lib/utils'
+import { cn, uid } from '@/lib/utils'
 import { useFinanceStore } from '@/store/use-finance-store'
 import type { Transaction } from '@/types/finance'
 
@@ -48,7 +48,7 @@ function App() {
   const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add')
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
 
-  const filteredTransactions = useMemo(
+  const transactionPageTransactions = useMemo(
     () => applyTransactionFilters(transactions, filters),
     [transactions, filters],
   )
@@ -105,9 +105,9 @@ function App() {
     })
   }
 
-  function exportCsv(): void {
+  function exportCsv(data: Transaction[]): void {
     const headers = ['id', 'date', 'description', 'category', 'type', 'amount', 'note']
-    const rows = filteredTransactions.map((transaction) =>
+    const rows = data.map((transaction) =>
       [
         transaction.id,
         formatDate(transaction.date),
@@ -126,7 +126,11 @@ function App() {
   }
 
   function exportJson(): void {
-    downloadTextFile('finance-dashboard-export.json', JSON.stringify(filteredTransactions, null, 2))
+    downloadTextFile('finance-dashboard-export.json', JSON.stringify(transactions, null, 2))
+  }
+
+  function exportJsonWithData(data: Transaction[]): void {
+    downloadTextFile('finance-dashboard-export.json', JSON.stringify(data, null, 2))
   }
 
   const pageContent = isLoading ? (
@@ -142,10 +146,10 @@ function App() {
       >
         {activePage === 'dashboard' && (
           <DashboardView
-            transactions={filteredTransactions}
+            transactions={transactions}
             role={role}
             onAddTransaction={openAddDialog}
-            onExportCSV={exportCsv}
+            onExportCSV={() => exportCsv(transactions)}
             onExportJSON={exportJson}
           />
         )}
@@ -155,7 +159,7 @@ function App() {
             role={role}
             filters={filters}
             categories={CATEGORIES}
-            filteredTransactions={filteredTransactions}
+            filteredTransactions={transactionPageTransactions}
             totalTransactions={transactions.length}
             currentPage={currentPage}
             itemsPerPage={itemsPerPage}
@@ -167,13 +171,18 @@ function App() {
             onAddTransaction={openAddDialog}
             onEditTransaction={openEditDialog}
             onDeleteTransaction={handleDeleteTransaction}
-            onExportCSV={exportCsv}
-            onExportJSON={exportJson}
+            onExportCSV={() => exportCsv(transactionPageTransactions)}
+            onExportJSON={() => exportJsonWithData(transactionPageTransactions)}
           />
         )}
 
         {activePage === 'insights' && (
-          <InsightsView transactions={filteredTransactions} onExportCSV={exportCsv} onExportJSON={exportJson} />
+          <InsightsView
+            transactions={transactions}
+            role={role}
+            onExportCSV={() => exportCsv(transactions)}
+            onExportJSON={exportJson}
+          />
         )}
 
         {activePage === 'settings' && (
@@ -189,10 +198,15 @@ function App() {
   )
 
   return (
-    <div className="min-h-screen bg-noise text-[#EAF0FF]">
-      <div className="mx-auto flex min-h-screen max-w-[1520px]">
-        <aside className="hidden w-[270px] border-r border-[#1A2D5A] bg-[#06122E]/95 lg:block">
-          <SidebarContent activePage={activePage} onSelectPage={setActivePage} />
+    <div className="min-h-screen bg-noise text-[var(--text-primary)]">
+      <div className="flex min-h-screen w-full">
+        <aside
+          className={cn(
+            'hidden w-[270px] border-r lg:block',
+            theme === 'light' ? 'border-[#D9E0EB] bg-[#F1F4F9]' : 'border-[#1A2D5A] bg-[#06122E]/95',
+          )}
+        >
+          <SidebarContent activePage={activePage} onSelectPage={setActivePage} theme={theme} />
         </aside>
 
         <div className="flex min-w-0 flex-1 flex-col">
@@ -206,7 +220,12 @@ function App() {
             onOpenMobileNav={() => setMobileNavOpen(true)}
           />
 
-          <div className="border-b border-[#1A2D59] bg-[#08183A] px-4 py-2 sm:px-6 lg:hidden">
+          <div
+            className={cn(
+              'border-b px-3 py-2 sm:px-6 lg:hidden',
+              theme === 'light' ? 'border-[#D9E0EB] bg-[#F7F9FC]' : 'border-[#1A2D59] bg-[#08183A]',
+            )}
+          >
             <div className="flex items-center gap-2">
               {(['admin', 'viewer'] as const).map((mode) => (
                 <button
@@ -215,18 +234,29 @@ function App() {
                   onClick={() => setRole(mode)}
                   className={`rounded-lg px-3 py-1.5 text-xs font-semibold capitalize transition ${
                     role === mode
-                      ? 'bg-[#6E86FF] text-[#08153A]'
-                      : 'bg-[#142655] text-[#9DB1E2] hover:text-[#E7EDFF]'
+                      ? theme === 'light'
+                        ? 'bg-[#2F66F6] text-white'
+                        : 'bg-[#6E86FF] text-[#08153A]'
+                      : theme === 'light'
+                        ? 'bg-[#E8EDF7] text-[#627592] hover:text-[#2C3D57]'
+                        : 'bg-[#142655] text-[#9DB1E2] hover:text-[#E7EDFF]'
                   }`}
                 >
                   {mode}
                 </button>
               ))}
-              <span className="ml-auto text-xs uppercase tracking-[0.08em] text-[#8CA2D7]">Role: {role}</span>
+              <span
+                className={cn(
+                  'ml-auto hidden text-[10px] uppercase tracking-[0.08em] min-[360px]:inline sm:text-xs',
+                  theme === 'light' ? 'text-[#7A8CA9]' : 'text-[#8CA2D7]',
+                )}
+              >
+                Role: {role}
+              </span>
             </div>
           </div>
 
-          <main className="flex-1 px-4 py-4 sm:px-6 sm:py-6">{pageContent}</main>
+          <main className="w-full flex-1 px-2.5 py-3 sm:px-6 sm:py-6">{pageContent}</main>
         </div>
       </div>
 
@@ -235,6 +265,7 @@ function App() {
           <div className="h-[80svh] overflow-y-auto">
             <SidebarContent
               activePage={activePage}
+              theme={theme}
               onSelectPage={(page) => {
                 setActivePage(page)
                 setMobileNavOpen(false)
