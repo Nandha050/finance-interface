@@ -1,5 +1,7 @@
 export type Role = 'viewer' | 'admin'
 
+export type NavPage = 'dashboard' | 'transactions' | 'insights' | 'settings'
+
 export type TransactionType = 'income' | 'expense'
 
 export interface Transaction {
@@ -32,4 +34,12 @@ export interface SummaryMetrics {
   income: number
   expenses: number
   savingsRate: number
+}
+
+export interface InsightData {
+  highestSpendingCategory: string
+  highestSpendingValue: number
+  monthOverMonthChange: number
+  observation: string
+  warning: string
 }
