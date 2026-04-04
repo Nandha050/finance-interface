@@ -146,7 +146,7 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
             <CardContent className="relative p-5 sm:p-6">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_22%,rgba(255,255,255,0.2)_0%,transparent_46%)]" />
               <p className="relative text-[30px] font-semibold leading-none text-[var(--text-primary)]">Elevate Your Finances</p>
-              <p className="relative mt-3 text-sm text-[var(--text-muted)]">
+              <p className="relative mt-3 text-sm text-white/80">
                 Unlock advanced predictive modeling and unlimited vault storage.
               </p>
               <button
