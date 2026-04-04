@@ -136,15 +136,16 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.35 }}
         >
-          <Card className="overflow-hidden border-[#3E55BD] bg-[linear-gradient(170deg,#6F88FF_0%,#4A66E7_100%)]">
-            <CardContent className="p-6">
-              <p className="text-[30px] font-semibold leading-none text-white">Elevate Your Architecture</p>
-              <p className="mt-3 text-sm text-[#EAF0FF]">
+          <Card className="upgrade-card overflow-hidden border-[var(--surface-border)]">
+            <CardContent className="relative p-5 sm:p-6">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_22%,rgba(255,255,255,0.2)_0%,transparent_46%)]" />
+              <p className="relative text-[30px] font-semibold leading-none text-[var(--text-primary)]">Elevate Your Architecture</p>
+              <p className="relative mt-3 text-sm text-[var(--text-muted)]">
                 Unlock advanced predictive modeling and unlimited vault storage.
               </p>
               <button
                 type="button"
-                className="mt-6 w-full rounded-xl bg-[#0E1E4D] px-4 py-3 text-sm font-semibold text-[#D9E3FF] transition hover:bg-[#14295E]"
+                className="upgrade-card-button relative mt-6 w-full rounded-xl px-4 py-3 text-sm font-semibold transition"
               >
                 Upgrade Plan
               </button>
@@ -156,13 +157,13 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
               <CardTitle className="text-base">Network Status</CardTitle>
             </CardHeader>
             <CardContent className="pt-0">
-              <div className="flex items-center justify-between text-sm text-[#B7C6EF]">
+              <div className="flex items-center justify-between text-sm text-[var(--text-muted)]">
                 <p className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-[#A8FF9A]" /> Global Vaults Online
+                  <span className="h-2 w-2 rounded-full bg-[var(--accent-income)]" /> Global Vaults Online
                 </p>
                 <span>99.9%</span>
               </div>
-              <p className="mt-4 text-xs text-[#8197CB]">12 active collaborators</p>
+              <p className="mt-4 text-xs text-[var(--text-soft)]">12 active collaborators</p>
             </CardContent>
           </Card>
         </motion.div>

@@ -27,7 +27,7 @@ const PERIODS = [
   { label: '3M', value: 3 },
 ] as const
 
-const PIE_COLORS = ['#9BAEFF', '#B9FF81', '#FF7FA8', '#64C8FF', '#FFC874']
+const PIE_COLORS = ['#25D5C5', '#B8F84A', '#5CE2A1', '#6CCBFF', '#E7C64A']
 
 export function PerformanceOverview({ trend, categoryData }: PerformanceOverviewProps) {
   const [period, setPeriod] = useState<number>(12)
@@ -45,7 +45,7 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
               <CardTitle>Performance Overview</CardTitle>
               <CardDescription className="text-sm leading-6">Equity and liquidity growth over selected months</CardDescription>
             </div>
-            <div className="flex items-center rounded-xl border border-[#1F3364] bg-[#0D1A40] p-1">
+            <div className="flex items-center rounded-xl border border-[var(--surface-border)] bg-[var(--surface-2)] p-1">
               {PERIODS.map((item) => (
                 <button
                   key={item.value}
@@ -53,8 +53,8 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
                   onClick={() => setPeriod(item.value)}
                   className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold transition sm:px-3 sm:text-xs ${
                     period === item.value
-                      ? 'bg-[#6E86FF] text-[#081539]'
-                      : 'text-[#91A6D8] hover:text-[#E1E9FF]'
+                      ? 'bg-[var(--accent-primary)] text-[#07161A]'
+                      : 'text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                   }`}
                 >
                   {item.label}
@@ -68,31 +68,31 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
                 <AreaChart data={visibleTrend} margin={{ top: 10, right: 0, bottom: 0, left: -20 }}>
                   <defs>
                     <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#8EA4FF" stopOpacity={0.6} />
-                      <stop offset="95%" stopColor="#8EA4FF" stopOpacity={0} />
+                      <stop offset="5%" stopColor="var(--accent-primary)" stopOpacity={0.56} />
+                      <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid stroke="#17315F" strokeDasharray="2 8" vertical={false} />
-                  <XAxis dataKey="month" tick={{ fill: '#7F95CB', fontSize: 11 }} tickLine={false} axisLine={false} />
+                  <CartesianGrid stroke="var(--surface-border)" strokeDasharray="2 8" vertical={false} />
+                  <XAxis dataKey="month" tick={{ fill: 'var(--text-soft)', fontSize: 11 }} tickLine={false} axisLine={false} />
                   <YAxis hide domain={[0, 'dataMax + 12000']} />
                   <Tooltip
-                    cursor={{ stroke: '#4F6EC3', strokeWidth: 1 }}
+                    cursor={{ stroke: 'var(--surface-border)', strokeWidth: 1 }}
                     contentStyle={{
-                      backgroundColor: '#091939',
-                      borderColor: '#284272',
+                      backgroundColor: 'var(--surface-2)',
+                      borderColor: 'var(--surface-border)',
                       borderRadius: '10px',
-                      color: '#E8EEFF',
+                      color: 'var(--text-primary)',
                     }}
                     formatter={(value) => [formatCurrencyCompact(Number(value ?? 0)), 'Balance']}
                   />
                   <Area
                     type="monotone"
                     dataKey="balance"
-                    stroke="#9FB2FF"
+                    stroke="var(--accent-primary)"
                     strokeWidth={2.2}
                     fill="url(#balanceGradient)"
-                    dot={{ fill: '#AFC0FF', strokeWidth: 0, r: 2.8 }}
-                    activeDot={{ r: 4.5, fill: '#DDE5FF' }}
+                    dot={{ fill: 'var(--accent-primary-soft)', strokeWidth: 0, r: 2.8 }}
+                    activeDot={{ r: 4.5, fill: 'var(--text-primary)' }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -125,10 +125,10 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
                   </Pie>
                   <Tooltip
                     contentStyle={{
-                      backgroundColor: '#091939',
-                      borderColor: '#284272',
+                      backgroundColor: 'var(--surface-2)',
+                      borderColor: 'var(--surface-border)',
                       borderRadius: '10px',
-                      color: '#E8EEFF',
+                      color: 'var(--text-primary)',
                     }}
                     formatter={(value) => [formatCurrencyCompact(Number(value ?? 0)), 'Spend']}
                   />

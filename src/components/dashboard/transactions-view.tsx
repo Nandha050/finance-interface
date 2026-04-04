@@ -48,6 +48,26 @@ const sortOptions: Array<{ value: SortOption; label: string }> = [
   { value: 'amount-asc', label: 'Amount Low-High' },
 ]
 
+const pageVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.03,
+    },
+  },
+}
+
+const blockVariants = {
+  hidden: { opacity: 0, y: 14 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.38 },
+  },
+}
+
 export function TransactionsView({
   role,
   filters,
@@ -81,8 +101,13 @@ export function TransactionsView({
   )
 
   return (
-    <div className="space-y-4 sm:space-y-5 lg:space-y-6">
-      <section className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+    <motion.div
+      className="space-y-4 sm:space-y-5 lg:space-y-6"
+      variants={pageVariants}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.section variants={blockVariants} className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
         <div>
           <h1 className="font-display text-[2.1rem] leading-none text-[var(--text-primary)] sm:text-[42px]">Transactions</h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--text-muted)] sm:text-base">
@@ -91,22 +116,23 @@ export function TransactionsView({
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <div className="rounded-2xl border border-[#203766] bg-[#0C1A40] px-3 py-2.5 sm:px-4 sm:py-3">
+          <div className="rounded-2xl border border-[var(--surface-border)] bg-[var(--surface-2)] px-3 py-2.5 sm:px-4 sm:py-3">
             <p className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Total Inflow</p>
-            <p className="mt-1 text-[1.85rem] font-semibold leading-none text-[#9FB3FF] sm:text-[34px]">
+            <p className="mt-1 text-[1.85rem] font-semibold leading-none text-[var(--accent-primary)] sm:text-[34px]">
               {formatCurrency(totalInflow)}
             </p>
           </div>
           
-          <div className="rounded-2xl border border-[#203766] bg-[#0C1A40] px-3 py-2.5 sm:px-4 sm:py-3">
+          <div className="rounded-2xl border border-[var(--surface-border)] bg-[var(--surface-2)] px-3 py-2.5 sm:px-4 sm:py-3">
             <p className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-soft)]">Net Flow</p>
-            <p className="mt-1 text-[1.85rem] font-semibold leading-none text-[#9FB3FF] sm:text-[34px]">
+            <p className="mt-1 text-[1.85rem] font-semibold leading-none text-[var(--accent-primary)] sm:text-[34px]">
               {formatCurrency(netFlow)}
             </p>
           </div>
         </div>
-      </section>
+      </motion.section>
 
+      <motion.div variants={blockVariants}>
       <Card>
         <CardHeader className="pb-2">
           <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
@@ -217,7 +243,7 @@ export function TransactionsView({
                         </td>
                         <td
                           className={`px-4 py-3 text-right font-semibold ${
-                            transaction.type === 'income' ? 'text-[#A9FFA1]' : 'text-[#FF9AB6]'
+                            transaction.type === 'income' ? 'text-[var(--accent-income)]' : 'text-[var(--accent-expense)]'
                           }`}
                         >
                           {transaction.type === 'income'
@@ -267,7 +293,7 @@ export function TransactionsView({
                       </div>
                       <p
                         className={`font-semibold ${
-                          transaction.type === 'income' ? 'text-[#A9FFA1]' : 'text-[#FF9AB6]'
+                          transaction.type === 'income' ? 'text-[var(--accent-income)]' : 'text-[var(--accent-expense)]'
                         }`}
                       >
                         {transaction.type === 'income'
@@ -317,8 +343,8 @@ export function TransactionsView({
                       onClick={() => onPageChange(page)}
                       className={`h-9 w-9 rounded-lg text-sm transition ${
                         safePage === page
-                          ? 'bg-[#8EA1FF] text-[#071539]'
-                          : 'bg-[#122352] text-[#A9B8E2] hover:text-[#EAF0FF]'
+                          ? 'bg-[var(--btn-primary-bg)] text-[var(--btn-primary-fg)]'
+                          : 'bg-[var(--btn-secondary-bg)] text-[var(--btn-secondary-fg)] hover:text-[var(--text-primary)]'
                       }`}
                     >
                       {page}
@@ -338,26 +364,28 @@ export function TransactionsView({
           )}
         </CardContent>
       </Card>
+      </motion.div>
 
-      <div className="grid gap-4 xl:grid-cols-[2fr,1fr]">
+      <motion.div variants={blockVariants} className="grid gap-4 xl:grid-cols-[2fr,1fr]">
         <Card>
           <CardHeader>
             <CardTitle>Growth Vector</CardTitle>
           </CardHeader>
           <CardContent className="pt-0">
-            <p className="text-sm text-[#8EA2D6]">
+            <p className="text-sm text-[var(--text-muted)]">
               Your infrastructure spending has stabilized while advisory revenue continues to rise. The current
               strategy indicates higher operational efficiency.
             </p>
-            <div className="mt-5 h-2 rounded-full bg-[#183062]">
-              <div className="h-full w-[70%] rounded-full bg-gradient-to-r from-[#F4FFD3] to-[#8CA3FF]" />
+            <div className="mt-5 h-2 rounded-full bg-[var(--surface-border)]">
+              <div className="h-full w-[70%] rounded-full bg-gradient-to-r from-[var(--accent-success-soft)] to-[var(--accent-primary)]" />
             </div>
-            <p className="mt-2 text-sm text-[#DCE5FF]">70% Efficiency</p>
+            <p className="mt-2 text-sm text-[var(--text-primary)]">70% Efficiency</p>
           </CardContent>
         </Card>
 
-        <Card className="overflow-hidden border-[#3E55BD] bg-[linear-gradient(160deg,#5F74E9_0%,#445FD9_100%)]">
-          <CardContent className="p-6">
+        <Card className="upgrade-card overflow-hidden border-[var(--surface-border)]">
+          <CardContent className="relative p-5 sm:p-6">
+              <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_22%,rgba(255,255,255,0.2)_0%,transparent_46%)]" />
             <CardTitle className="text-white">Resource Analysis</CardTitle>
             <p className="mt-2 text-sm text-[#E9EEFF]">
               {role === 'admin'
@@ -365,13 +393,15 @@ export function TransactionsView({
                 : 'Resource performance is available in read-only mode for viewer access.'}
             </p>
             {role === 'admin' && (
-              <Button variant="secondary" className="mt-6 w-full bg-white text-[#253E90] hover:bg-[#EEF2FF]">
+              <Button variant="secondary" type="button" className="upgrade-card-button relative mt-6 w-full rounded-xl px-4 py-3 text-sm font-semibold transition"
+>
                 Export Blueprint
               </Button>
             )}
           </CardContent>
         </Card>
-      </div>
-    </div>
+        
+      </motion.div>
+    </motion.div>
   )
 }

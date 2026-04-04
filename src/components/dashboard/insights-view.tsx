@@ -21,6 +21,26 @@ interface InsightsViewProps {
   onExportJSON: () => void
 }
 
+const pageVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.03,
+    },
+  },
+}
+
+const blockVariants = {
+  hidden: { opacity: 0, y: 14 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.38 },
+  },
+}
+
 export function InsightsView({ transactions, role, onExportCSV, onExportJSON }: InsightsViewProps) {
   const insights = getInsights(transactions)
   const trend = getMonthlyTrend(transactions)
@@ -51,8 +71,13 @@ export function InsightsView({ transactions, role, onExportCSV, onExportJSON }: 
   ]
 
   return (
-    <div className="space-y-4 sm:space-y-5 lg:space-y-6">
-      <section className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <motion.div
+      className="space-y-4 sm:space-y-5 lg:space-y-6"
+      variants={pageVariants}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.section variants={blockVariants} className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="font-display text-[2.1rem] leading-none text-[var(--text-primary)] sm:text-[42px]">Financial Insights</h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--text-muted)] sm:text-base">
@@ -78,10 +103,10 @@ export function InsightsView({ transactions, role, onExportCSV, onExportJSON }: 
             </DropdownMenu>
           )}
         </div>
-      </section>
+      </motion.section>
 
-      <div className="grid gap-4 xl:grid-cols-[2fr,1fr]">
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>
+      <motion.div variants={blockVariants} className="grid gap-4 xl:grid-cols-[2fr,1fr]">
+        <div>
           <Card>
             <CardHeader className="pb-2">
               <CardTitle>Spending Performance</CardTitle>
@@ -102,11 +127,11 @@ export function InsightsView({ transactions, role, onExportCSV, onExportJSON }: 
                         color: 'var(--text-primary)',
                       }}
                     />
-                    <Line type="monotone" dataKey="actual" stroke="#95A9FF" strokeWidth={2.3} dot={false} />
+                    <Line type="monotone" dataKey="actual" stroke="var(--accent-primary)" strokeWidth={2.3} dot={false} />
                     <Line
                       type="monotone"
                       dataKey="budget"
-                      stroke="#B9FF81"
+                      stroke="var(--accent-success)"
                       strokeWidth={2}
                       dot={false}
                       strokeDasharray="4 4"
@@ -116,9 +141,9 @@ export function InsightsView({ transactions, role, onExportCSV, onExportJSON }: 
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08, duration: 0.35 }}>
+        <div>
           <Card className="h-full border-[var(--surface-border)] bg-[linear-gradient(180deg,var(--surface-2)_0%,var(--surface-1)_100%)]">
             <CardHeader>
               <p className="inline-flex w-fit rounded-full bg-[color-mix(in_srgb,var(--accent-success)_18%,transparent)] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[var(--accent-success)]">
@@ -139,10 +164,10 @@ export function InsightsView({ transactions, role, onExportCSV, onExportJSON }: 
               </div>
             </CardContent>
           </Card>
-        </motion.div>
-      </div>
+        </div>
+      </motion.div>
 
-      <div className="grid gap-4 lg:grid-cols-3">
+      <motion.div variants={blockVariants} className="grid gap-4 lg:grid-cols-3">
         <Card>
           <CardHeader className="pb-2">
             <div className="mb-2 grid h-9 w-9 place-items-center rounded-lg bg-[var(--surface-2)] text-[var(--text-muted)]">
@@ -177,8 +202,9 @@ export function InsightsView({ transactions, role, onExportCSV, onExportJSON }: 
           </CardHeader>
           <CardContent className="pt-0 text-sm text-[var(--text-muted)]">{insights.warning}</CardContent>
         </Card>
-      </div>
+      </motion.div>
 
+      <motion.div variants={blockVariants}>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-3">
           <CardTitle>Architectural Breakdown</CardTitle>
@@ -208,12 +234,13 @@ export function InsightsView({ transactions, role, onExportCSV, onExportJSON }: 
           })}
         </CardContent>
       </Card>
+      </motion.div>
 
-      <footer className="border-t border-[var(--surface-border)] pt-3 text-xs text-[var(--text-soft)]">
+      <motion.footer variants={blockVariants} className="border-t border-[var(--surface-border)] pt-3 text-xs text-[var(--text-soft)]">
         <p>
           © 2026 Cobalt Architect. Financial intelligence processed through secure architectural neural networks.
         </p>
-      </footer>
-    </div>
+      </motion.footer>
+    </motion.div>
   )
 }

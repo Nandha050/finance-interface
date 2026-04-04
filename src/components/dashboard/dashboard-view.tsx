@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import { Download, Plus } from 'lucide-react'
 
 import { PerformanceOverview } from '@/components/dashboard/performance-overview'
@@ -11,19 +12,41 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { getCategoryBreakdown, getInsights, getMonthlyTrend, getSummaryMetrics } from '@/lib/analytics'
-import type { Role, Transaction } from '@/types/finance'
+import type { Role, ThemeMode, Transaction } from '@/types/finance'
 
 interface DashboardViewProps {
   transactions: Transaction[]
   role: Role
+  theme: ThemeMode
   onAddTransaction: () => void
   onExportCSV: () => void
   onExportJSON: () => void
 }
 
+const pageVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.04,
+    },
+  },
+}
+
+const blockVariants = {
+  hidden: { opacity: 0, y: 14 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.38 },
+  },
+}
+
 export function DashboardView({
   transactions,
   role,
+  theme,
   onAddTransaction,
   onExportCSV,
   onExportJSON,
@@ -34,8 +57,13 @@ export function DashboardView({
   const insights = getInsights(transactions)
 
   return (
-    <div className="space-y-4 sm:space-y-5 lg:space-y-6">
-      <section className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <motion.div
+      className="space-y-4 sm:space-y-5 lg:space-y-6"
+      variants={pageVariants}
+      initial="hidden"
+      animate="show"
+    >
+      <motion.section variants={blockVariants} className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h1 className="font-display text-[2.1rem] leading-none text-[var(--text-primary)] sm:text-[42px]">
             Financial Blueprint
@@ -66,11 +94,19 @@ export function DashboardView({
             </Button>
           )}
         </div>
-      </section>
+      </motion.section>
 
-      <SummaryCards metrics={metrics} monthOverMonth={insights.monthOverMonthChange} />
-      <PerformanceOverview trend={trend} categoryData={categoryData} />
-      <RecentActivity transactions={transactions} />
-    </div>
+      <motion.div variants={blockVariants}>
+        <SummaryCards metrics={metrics} monthOverMonth={insights.monthOverMonthChange} theme={theme} />
+      </motion.div>
+
+      <motion.div variants={blockVariants}>
+        <PerformanceOverview trend={trend} categoryData={categoryData} />
+      </motion.div>
+
+      <motion.div variants={blockVariants}>
+        <RecentActivity transactions={transactions} />
+      </motion.div>
+    </motion.div>
   )
 }

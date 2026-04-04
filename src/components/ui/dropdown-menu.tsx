@@ -18,7 +18,7 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        'z-50 min-w-[12rem] overflow-hidden rounded-lg border border-[#243A6A] bg-[#0A1739] p-1 text-[#DEE7FF] shadow-panel',
+        'z-50 min-w-[12rem] overflow-hidden rounded-lg border border-[var(--surface-border)] bg-[var(--surface-2)] p-1 text-[var(--text-primary)] shadow-panel',
         className,
       )}
       {...props}
@@ -34,7 +34,7 @@ const DropdownMenuItem = React.forwardRef<
   <DropdownMenuPrimitive.Item
     ref={ref}
     className={cn(
-      'relative flex cursor-default select-none items-center rounded-md px-2 py-2 text-sm outline-none transition focus:bg-[#1A2B5A] data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      'relative flex cursor-default select-none items-center rounded-md px-2 py-2 text-sm outline-none transition focus:bg-[var(--btn-secondary-bg)] data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className,
     )}
     {...props}
@@ -49,7 +49,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      'relative flex cursor-default select-none items-center rounded-md py-2 pl-8 pr-2 text-sm outline-none transition focus:bg-[#1A2B5A] data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
+      'relative flex cursor-default select-none items-center rounded-md py-2 pl-8 pr-2 text-sm outline-none transition focus:bg-[var(--btn-secondary-bg)] data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
       className,
     )}
     checked={checked}
@@ -72,7 +72,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
   <DropdownMenuPrimitive.SubTrigger
     ref={ref}
     className={cn(
-      'flex cursor-default select-none items-center rounded-md px-2 py-2 text-sm outline-none focus:bg-[#1A2B5A] data-[state=open]:bg-[#1A2B5A]',
+      'flex cursor-default select-none items-center rounded-md px-2 py-2 text-sm outline-none focus:bg-[var(--btn-secondary-bg)] data-[state=open]:bg-[var(--btn-secondary-bg)]',
       className,
     )}
     {...props}
@@ -89,7 +89,7 @@ const DropdownMenuSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Separator
     ref={ref}
-    className={cn('-mx-1 my-1 h-px bg-[#233A68]', className)}
+    className={cn('-mx-1 my-1 h-px bg-[var(--surface-border)]', className)}
     {...props}
   />
 ))
@@ -101,7 +101,7 @@ const DropdownMenuLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Label
     ref={ref}
-    className={cn('px-2 py-1.5 text-xs text-[#94A9DB]', className)}
+    className={cn('px-2 py-1.5 text-xs text-[var(--text-muted)]', className)}
     {...props}
   />
 ))

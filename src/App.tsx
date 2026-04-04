@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Sparkles } from 'lucide-react'
 
 import { DashboardSkeleton } from '@/components/dashboard/dashboard-skeleton'
 import { DashboardView } from '@/components/dashboard/dashboard-view'
@@ -69,6 +70,56 @@ function App() {
     const root = document.documentElement
     root.classList.toggle('light', theme === 'light')
   }, [theme])
+
+  useEffect(() => {
+    const root = document.documentElement
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    let targetX = 0.5
+    let targetY = 0.5
+    let currentX = 0.5
+    let currentY = 0.5
+    let frame = 0
+
+    root.style.setProperty('--pointer-x', '0.5')
+    root.style.setProperty('--pointer-y', '0.5')
+
+    const animate = () => {
+      currentX += (targetX - currentX) * (reduceMotion ? 1 : 0.12)
+      currentY += (targetY - currentY) * (reduceMotion ? 1 : 0.12)
+
+      root.style.setProperty('--pointer-x', currentX.toFixed(4))
+      root.style.setProperty('--pointer-y', currentY.toFixed(4))
+
+      frame = window.requestAnimationFrame(animate)
+    }
+
+    const handlePointerMove = (clientX: number, clientY: number) => {
+      targetX = Math.min(1, Math.max(0, clientX / window.innerWidth))
+      targetY = Math.min(1, Math.max(0, clientY / window.innerHeight))
+    }
+
+    const onMouseMove = (event: MouseEvent) => {
+      handlePointerMove(event.clientX, event.clientY)
+    }
+
+    const onTouchMove = (event: TouchEvent) => {
+      const touch = event.touches[0]
+      if (touch) {
+        handlePointerMove(touch.clientX, touch.clientY)
+      }
+    }
+
+    window.addEventListener('mousemove', onMouseMove)
+    window.addEventListener('touchmove', onTouchMove, { passive: true })
+    frame = window.requestAnimationFrame(animate)
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove)
+      window.removeEventListener('touchmove', onTouchMove)
+      window.cancelAnimationFrame(frame)
+    }
+  }, [])
 
   function openAddDialog(): void {
     setSelectedTransaction(null)
@@ -148,6 +199,7 @@ function App() {
           <DashboardView
             transactions={transactions}
             role={role}
+            theme={theme}
             onAddTransaction={openAddDialog}
             onExportCSV={() => exportCsv(transactions)}
             onExportJSON={exportJson}
@@ -198,18 +250,35 @@ function App() {
   )
 
   return (
-    <div className="min-h-screen bg-noise text-[var(--text-primary)]">
-      <div className="flex min-h-screen w-full">
+    <div className="fluid-stage h-[100svh] min-h-screen overflow-hidden text-[var(--text-primary)]">
+      <div className="fluid-bg" aria-hidden>
+        <div className="fluid-orb fluid-orb-primary" />
+        <div className="fluid-orb fluid-orb-secondary" />
+        <div className="fluid-orb fluid-orb-tertiary" />
+        <div className="fluid-grid" />
+      </div>
+
+      <div className="relative z-[1] flex h-full w-full overflow-hidden">
         <aside
           className={cn(
-            'hidden w-[270px] border-r lg:block',
-            theme === 'light' ? 'border-[#D9E0EB] bg-[#F1F4F9]' : 'border-[#1A2D5A] bg-[#06122E]/95',
+            'hidden h-full w-[284px] p-2 lg:block',
+            theme === 'light' ? 'bg-transparent' : 'bg-transparent',
           )}
         >
-          <SidebarContent activePage={activePage} onSelectPage={setActivePage} theme={theme} />
+          <SidebarContent
+            activePage={activePage}
+            onSelectPage={setActivePage}
+            theme={theme}
+            className={cn(
+              'h-[calc(100svh-1rem)] overflow-y-auto rounded-[24px] border shadow-[0_14px_40px_rgba(8,12,30,0.28)] backdrop-blur-xl',
+              theme === 'light'
+                ? 'border-[#D9E1EF] bg-[linear-gradient(180deg,rgba(255,255,255,0.92)_0%,rgba(245,248,253,0.9)_100%)]'
+                : 'border-[var(--surface-border)] bg-[linear-gradient(180deg,rgba(16,23,37,0.9)_0%,rgba(12,18,30,0.88)_100%)]',
+            )}
+          />
         </aside>
 
-        <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex h-full min-w-0 flex-1 flex-col overflow-hidden">
           <TopBar
             role={role}
             theme={theme}
@@ -222,11 +291,51 @@ function App() {
 
           <div
             className={cn(
-              'border-b px-3 py-2 sm:px-6 lg:hidden',
-              theme === 'light' ? 'border-[#D9E0EB] bg-[#F7F9FC]' : 'border-[#1A2D59] bg-[#08183A]',
+              'mx-2 mb-2 rounded-2xl border px-3 py-2 sm:mx-4 sm:px-4 lg:hidden',
+              theme === 'light' ? 'border-[#D9E0EB] bg-[#F7F9FC]/95' : 'border-[var(--surface-border-soft)] bg-[#101725]/88',
             )}
           >
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between gap-2 sm:hidden">
+              <div className="flex min-w-0 items-center gap-2">
+                <div
+                  className={cn(
+                    'grid h-7 w-7 shrink-0 place-items-center rounded-lg',
+                    theme === 'light' ? 'bg-[#E8EEFF] text-[#2F66F6]' : 'bg-[#173238] text-[#6DEDDC]',
+                  )}
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                </div>
+                <div className="min-w-0">
+                  <p
+                    className={cn(
+                      'truncate text-xs font-semibold leading-none',
+                      theme === 'light' ? 'text-[#1E2B44]' : 'text-[var(--text-primary)]',
+                    )}
+                  >
+                    Cobalt Architect
+                  </p>
+                  <p
+                    className={cn(
+                      'mt-0.5 truncate text-[9px] tracking-[0.12em]',
+                      theme === 'light' ? 'text-[#7A889F]' : 'text-[var(--text-soft)]',
+                    )}
+                  >
+                    DIGITAL ARCHITECTURE
+                  </p>
+                </div>
+              </div>
+
+              <span
+                className={cn(
+                  'hidden text-[10px] uppercase tracking-[0.08em] min-[360px]:inline sm:text-xs',
+                  theme === 'light' ? 'text-[#7A8CA9]' : 'text-[var(--text-muted)]',
+                )}
+              >
+                Role: {role}
+              </span>
+            </div>
+
+            <div className="mt-2 flex items-center gap-2 sm:mt-0 sm:justify-between">
               {(['admin', 'viewer'] as const).map((mode) => (
                 <button
                   key={mode}
@@ -236,10 +345,10 @@ function App() {
                     role === mode
                       ? theme === 'light'
                         ? 'bg-[#2F66F6] text-white'
-                        : 'bg-[#6E86FF] text-[#08153A]'
+                        : 'bg-[var(--accent-primary)] text-[#07161A]'
                       : theme === 'light'
                         ? 'bg-[#E8EDF7] text-[#627592] hover:text-[#2C3D57]'
-                        : 'bg-[#142655] text-[#9DB1E2] hover:text-[#E7EDFF]'
+                        : 'bg-[var(--btn-secondary-bg)] text-[var(--text-muted)] hover:text-[var(--text-primary)]'
                   }`}
                 >
                   {mode}
@@ -247,8 +356,8 @@ function App() {
               ))}
               <span
                 className={cn(
-                  'ml-auto hidden text-[10px] uppercase tracking-[0.08em] min-[360px]:inline sm:text-xs',
-                  theme === 'light' ? 'text-[#7A8CA9]' : 'text-[#8CA2D7]',
+                  'ml-auto hidden text-[10px] uppercase tracking-[0.08em] sm:inline sm:text-xs',
+                  theme === 'light' ? 'text-[#7A8CA9]' : 'text-[var(--text-muted)]',
                 )}
               >
                 Role: {role}
@@ -256,13 +365,18 @@ function App() {
             </div>
           </div>
 
-          <main className="w-full flex-1 px-2.5 py-3 sm:px-6 sm:py-6">{pageContent}</main>
+          <main className="w-full flex-1 overflow-y-auto px-2.5 py-3 sm:px-6 sm:py-6">
+            {pageContent}
+          </main>
         </div>
       </div>
 
       <Dialog open={isMobileNavOpen} onOpenChange={setMobileNavOpen}>
-        <DialogContent className="max-w-[360px] p-0">
-          <div className="h-[80svh] overflow-y-auto">
+        <DialogContent
+          overlayClassName={theme === 'light' ? 'bg-[#DDE4F0]/96 backdrop-blur-none' : undefined}
+          className={cn('max-w-[360px] p-0', theme === 'light' && 'border-[#D7DFEC] bg-[#F1F4F9]')}
+        >
+          <div className={cn('h-[80svh] overflow-y-auto', theme === 'light' && 'bg-[#F1F4F9]')}>
             <SidebarContent
               activePage={activePage}
               theme={theme}
