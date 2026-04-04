@@ -69,7 +69,7 @@ export function DashboardView({
             Financial Blueprint
           </h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--text-muted)] sm:text-base">
-            Welcome back, Architect. Here is your real-time performance summary.
+            Welcome back. Here is your real-time performance summary.
           </p>
         </div>
 

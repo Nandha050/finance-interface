@@ -111,7 +111,7 @@ export function TransactionsView({
         <div>
           <h1 className="font-display text-[2.1rem] leading-none text-[var(--text-primary)] sm:text-[42px]">Transactions</h1>
           <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--text-muted)] sm:text-base">
-            Detailed log of architectural resource allocation.
+            Detailed log of financial resource allocation.
           </p>
         </div>
 

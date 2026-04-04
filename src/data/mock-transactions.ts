@@ -100,7 +100,7 @@ export const MOCK_TRANSACTIONS: Transaction[] = [
   {
     id: 'txn-013',
     date: '2025-10-24',
-    description: 'Architecture License',
+    description: 'Enterprise Software License',
     category: 'Software',
     amount: 450,
     type: 'expense',

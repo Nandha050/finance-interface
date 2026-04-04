@@ -1,5 +1,6 @@
-import { Crown, MoonStar, Sparkles, Sun } from 'lucide-react'
+import { Crown, MoonStar, Sun } from 'lucide-react'
 
+import brandMark from '@/assets/Logo-mark-transparent.png'
 import { NAV_ITEMS } from '@/data/navigation'
 import { Switch } from '@/components/ui/switch'
 import { cn } from '@/lib/utils'
@@ -63,20 +64,17 @@ export function SidebarContent({
         )}
       >
         <div className="flex items-center gap-3">
-          <div
-            className={cn(
-              'grid h-8 w-8 place-items-center rounded-xl sm:h-9 sm:w-9',
-              isLight ? 'bg-[#E8EEFF] text-[#3D63E8]' : 'bg-[#173238] text-[#6DEDDC]',
-            )}
-          >
-            <Sparkles className="h-4 w-4" />
-          </div>
-          <div>
-            <p className={cn('font-display text-sm font-semibold sm:text-base', isLight ? 'text-[#1E2B44]' : 'text-[var(--text-primary)]')}>
-              Cobalt Architect
+          <img
+            src={brandMark}
+            alt="Cobalt Finance mark"
+            className="h-10 w-10 rounded-xl object-contain drop-shadow-[0_2px_8px_rgba(0,0,0,0.35)] sm:h-11 sm:w-11"
+          />
+          <div className="min-w-0">
+            <p className={cn('truncate font-display text-sm font-semibold sm:text-base', isLight ? 'text-[#1E2B44]' : 'text-[var(--text-primary)]')}>
+              Cobalt Finance
             </p>
-            <p className={cn('text-[10px] tracking-[0.16em]', isLight ? 'text-[#7A889F]' : 'text-[var(--text-soft)]')}>
-              DIGITAL ARCHITECTURE
+            <p className={cn('mt-0.5 truncate text-[10px] tracking-[0.14em]', isLight ? 'text-[#7A889F]' : 'text-[var(--text-soft)]')}>
+              DIGITAL FINANCE
             </p>
           </div>
         </div>
@@ -127,7 +125,7 @@ export function SidebarContent({
             Pro Plan Active
           </p>
           <p className={cn('mt-2 text-xs leading-5', isLight ? 'text-[#70819B]' : 'text-[var(--text-muted)]')}>
-            You are using 82% of architectural resources.
+            You are using 82% of financial resources.
           </p>
           <button
             type="button"

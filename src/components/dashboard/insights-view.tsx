@@ -4,6 +4,7 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/dashboard/empty-state'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -42,10 +43,11 @@ const blockVariants = {
 }
 
 export function InsightsView({ transactions, role, onExportCSV, onExportJSON }: InsightsViewProps) {
+  const hasTransactions = transactions.length > 0
   const insights = getInsights(transactions)
   const trend = getMonthlyTrend(transactions)
   const categoryBreakdown = getCategoryBreakdown(transactions)
-  const monthlyBase = trend[trend.length - 1]?.expenses ?? 5200
+  const monthlyBase = trend[trend.length - 1]?.expenses ?? 0
 
   const spendingPerformance = [
     {
@@ -69,6 +71,33 @@ export function InsightsView({ transactions, role, onExportCSV, onExportJSON }: 
       budget: Math.round(monthlyBase * 0.29),
     },
   ]
+
+  if (!hasTransactions) {
+    return (
+      <motion.div
+        className="space-y-4 sm:space-y-5 lg:space-y-6"
+        variants={pageVariants}
+        initial="hidden"
+        animate="show"
+      >
+        <motion.section variants={blockVariants} className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h1 className="font-display text-[2.1rem] leading-none text-[var(--text-primary)] sm:text-[42px]">Financial Insights</h1>
+            <p className="mt-2 max-w-xl text-sm leading-6 text-[var(--text-muted)] sm:text-base">
+              Predictive pattern recognition and spending diagnostics for the current period.
+            </p>
+          </div>
+        </motion.section>
+
+        <motion.div variants={blockVariants}>
+          <EmptyState
+            title="No insight data available"
+            description="Add transactions to generate trend analysis, budget comparisons, and portfolio breakdown insights."
+          />
+        </motion.div>
+      </motion.div>
+    )
+  }
 
   return (
     <motion.div
@@ -110,7 +139,7 @@ export function InsightsView({ transactions, role, onExportCSV, onExportJSON }: 
           <Card>
             <CardHeader className="pb-2">
               <CardTitle>Spending Performance</CardTitle>
-              <CardDescription>Weekly delta against architectural budget</CardDescription>
+              <CardDescription>Weekly delta against planned budget</CardDescription>
             </CardHeader>
             <CardContent className="pt-3">
               <div className="h-[260px] w-full sm:h-[300px]">
@@ -207,38 +236,44 @@ export function InsightsView({ transactions, role, onExportCSV, onExportJSON }: 
       <motion.div variants={blockVariants}>
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-3">
-          <CardTitle>Architectural Breakdown</CardTitle>
+          <CardTitle>Portfolio Breakdown</CardTitle>
           <button type="button" className="text-sm text-[var(--text-muted)] hover:text-[var(--text-primary)]">
             View All Clusters
           </button>
         </CardHeader>
         <CardContent className="space-y-5 pt-0">
-          {categoryBreakdown.slice(0, 3).map((item) => {
-            const goal = item.value * 1.7
-            const progress = Math.min((item.value / goal) * 100, 100)
+          {categoryBreakdown.length > 0 ? (
+            categoryBreakdown.slice(0, 3).map((item) => {
+              const goal = item.value * 1.7
+              const progress = Math.min((item.value / goal) * 100, 100)
 
-            return (
-              <div key={item.category} className="grid gap-2 sm:grid-cols-[180px,1fr,160px] sm:items-center">
-                <p className="font-medium text-[var(--text-primary)]">{item.category}</p>
-                <div className="h-2 rounded-full bg-[var(--surface-border)]">
-                  <div
-                    className="h-full rounded-full bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-primary-soft)]"
-                    style={{ width: `${progress}%` }}
-                  />
+              return (
+                <div key={item.category} className="grid gap-2 sm:grid-cols-[180px,1fr,160px] sm:items-center">
+                  <p className="font-medium text-[var(--text-primary)]">{item.category}</p>
+                  <div className="h-2 rounded-full bg-[var(--surface-border)]">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-primary-soft)]"
+                      style={{ width: `${progress}%` }}
+                    />
+                  </div>
+                  <p className="text-right text-sm text-[var(--text-muted)]">
+                    {formatCurrency(item.value)} / {formatCurrency(Math.round(goal))}
+                  </p>
                 </div>
-                <p className="text-right text-sm text-[var(--text-muted)]">
-                  {formatCurrency(item.value)} / {formatCurrency(Math.round(goal))}
-                </p>
-              </div>
-            )
-          })}
+              )
+            })
+          ) : (
+            <p className="rounded-xl border border-dashed border-[var(--surface-border)] bg-[var(--surface-2)] p-4 text-center text-sm text-[var(--text-muted)]">
+              No expense categories available yet. Add expense transactions to populate this section.
+            </p>
+          )}
         </CardContent>
       </Card>
       </motion.div>
 
       <motion.footer variants={blockVariants} className="border-t border-[var(--surface-border)] pt-3 text-xs text-[var(--text-soft)]">
         <p>
-          © 2026 Cobalt Architect. Financial intelligence processed through secure architectural neural networks.
+          © 2026 Cobalt Finance. Financial intelligence processed through secure fintech neural networks.
         </p>
       </motion.footer>
     </motion.div>

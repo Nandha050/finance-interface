@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Sparkles } from 'lucide-react'
+import { Search } from 'lucide-react'
 
 import { DashboardSkeleton } from '@/components/dashboard/dashboard-skeleton'
 import { DashboardView } from '@/components/dashboard/dashboard-view'
@@ -11,6 +11,7 @@ import { TransactionsView } from '@/components/dashboard/transactions-view'
 import { SidebarContent } from '@/components/layout/sidebar'
 import { TopBar } from '@/components/layout/topbar'
 import { Dialog, DialogContent } from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
 import { CATEGORIES } from '@/data/mock-transactions'
 import { applyTransactionFilters } from '@/lib/analytics'
 import { downloadTextFile, formatDate } from '@/lib/format'
@@ -122,18 +123,30 @@ function App() {
   }, [])
 
   function openAddDialog(): void {
+    if (role !== 'admin') {
+      return
+    }
+
     setSelectedTransaction(null)
     setDialogMode('add')
     setDialogOpen(true)
   }
 
   function openEditDialog(transaction: Transaction): void {
+    if (role !== 'admin') {
+      return
+    }
+
     setSelectedTransaction(transaction)
     setDialogMode('edit')
     setDialogOpen(true)
   }
 
   function handleDeleteTransaction(id: string): void {
+    if (role !== 'admin') {
+      return
+    }
+
     const target = transactions.find((item) => item.id === id)
     const shouldDelete = window.confirm(
       `Delete transaction${target ? `: ${target.description}` : ''}? This action cannot be undone.`,
@@ -145,6 +158,10 @@ function App() {
   }
 
   function handleSubmitTransaction(data: Omit<Transaction, 'id'>): void {
+    if (role !== 'admin') {
+      return
+    }
+
     if (dialogMode === 'edit' && selectedTransaction) {
       updateTransaction(selectedTransaction.id, data)
       return
@@ -157,6 +174,10 @@ function App() {
   }
 
   function exportCsv(data: Transaction[]): void {
+    if (role !== 'admin') {
+      return
+    }
+
     const headers = ['id', 'date', 'description', 'category', 'type', 'amount', 'note']
     const rows = data.map((transaction) =>
       [
@@ -177,10 +198,18 @@ function App() {
   }
 
   function exportJson(): void {
+    if (role !== 'admin') {
+      return
+    }
+
     downloadTextFile('finance-dashboard-export.json', JSON.stringify(transactions, null, 2))
   }
 
   function exportJsonWithData(data: Transaction[]): void {
+    if (role !== 'admin') {
+      return
+    }
+
     downloadTextFile('finance-dashboard-export.json', JSON.stringify(data, null, 2))
   }
 
@@ -242,7 +271,13 @@ function App() {
             role={role}
             theme={theme}
             onThemeChange={setTheme}
-            onResetData={resetTransactions}
+            onResetData={() => {
+              if (role !== 'admin') {
+                return
+              }
+
+              resetTransactions()
+            }}
           />
         )}
       </motion.div>
@@ -291,57 +326,23 @@ function App() {
 
           <div
             className={cn(
-              'mx-2 mb-2 rounded-2xl border px-3 py-2 sm:mx-4 sm:px-4 lg:hidden',
+              'relative z-20 mx-2 mt-1 mb-2 rounded-xl border px-2.5 py-1.5 sm:mx-4 sm:rounded-2xl sm:px-3 sm:py-2 lg:hidden',
               theme === 'light' ? 'border-[#D9E0EB] bg-[#F7F9FC]/95' : 'border-[var(--surface-border-soft)] bg-[#101725]/88',
             )}
           >
-            <div className="flex items-center justify-between gap-2 sm:hidden">
-              <div className="flex min-w-0 items-center gap-2">
-                <div
-                  className={cn(
-                    'grid h-7 w-7 shrink-0 place-items-center rounded-lg',
-                    theme === 'light' ? 'bg-[#E8EEFF] text-[#2F66F6]' : 'bg-[#173238] text-[#6DEDDC]',
-                  )}
-                >
-                  <Sparkles className="h-3.5 w-3.5" />
-                </div>
-                <div className="min-w-0">
-                  <p
-                    className={cn(
-                      'truncate text-xs font-semibold leading-none',
-                      theme === 'light' ? 'text-[#1E2B44]' : 'text-[var(--text-primary)]',
-                    )}
-                  >
-                    Cobalt Architect
-                  </p>
-                  <p
-                    className={cn(
-                      'mt-0.5 truncate text-[9px] tracking-[0.12em]',
-                      theme === 'light' ? 'text-[#7A889F]' : 'text-[var(--text-soft)]',
-                    )}
-                  >
-                    DIGITAL ARCHITECTURE
-                  </p>
-                </div>
-              </div>
-
-              <span
+            <div className="flex items-center justify-between gap-2">
+              <div
                 className={cn(
-                  'hidden text-[10px] uppercase tracking-[0.08em] min-[360px]:inline sm:text-xs',
-                  theme === 'light' ? 'text-[#7A8CA9]' : 'text-[var(--text-muted)]',
+                  'inline-flex items-center gap-1 rounded-full border p-1',
+                  theme === 'light' ? 'border-[#D6DEEA] bg-white' : 'border-[var(--surface-border)] bg-[var(--surface-2)]',
                 )}
               >
-                Role: {role}
-              </span>
-            </div>
-
-            <div className="mt-2 flex items-center gap-2 sm:mt-0 sm:justify-between">
               {(['admin', 'viewer'] as const).map((mode) => (
                 <button
                   key={mode}
                   type="button"
                   onClick={() => setRole(mode)}
-                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold capitalize transition ${
+                  className={`rounded-full px-3 py-1.5 text-xs font-semibold capitalize transition sm:px-3.5 ${
                     role === mode
                       ? theme === 'light'
                         ? 'bg-[#2F66F6] text-white'
@@ -354,9 +355,10 @@ function App() {
                   {mode}
                 </button>
               ))}
+              </div>
               <span
                 className={cn(
-                  'ml-auto hidden text-[10px] uppercase tracking-[0.08em] sm:inline sm:text-xs',
+                  'text-[10px] uppercase tracking-[0.08em] min-[360px]:inline sm:text-xs',
                   theme === 'light' ? 'text-[#7A8CA9]' : 'text-[var(--text-muted)]',
                 )}
               >
@@ -366,6 +368,17 @@ function App() {
           </div>
 
           <main className="w-full flex-1 overflow-y-auto px-2.5 py-3 sm:px-6 sm:py-6">
+            <div className="mb-3 sm:hidden">
+              <div className="relative min-w-0">
+                <Search className={cn('pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2', theme === 'light' ? 'text-[#8A97AE]' : 'text-[var(--text-soft)]')} />
+                <Input
+                  value={filters.searchQuery}
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder="Search transactions..."
+                  className="h-9 pl-9 text-sm"
+                />
+              </div>
+            </div>
             {pageContent}
           </main>
         </div>

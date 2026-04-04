@@ -69,9 +69,15 @@ export function SettingsView({ role, theme, onThemeChange, onResetData }: Settin
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-0">
-          <Button variant="secondary" onClick={onResetData}>
-            Reset Mock Data
-          </Button>
+          {role === 'admin' ? (
+            <Button variant="secondary" onClick={onResetData}>
+              Reset Mock Data
+            </Button>
+          ) : (
+            <p className="text-sm text-[#8EA2D6]">
+              Viewer role is read-only. Switch to admin mode to reset stored data.
+            </p>
+          )}
         </CardContent>
       </Card>
     </div>

@@ -33,6 +33,8 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
   const [period, setPeriod] = useState<number>(12)
 
   const visibleTrend = useMemo(() => trend.slice(-period), [period, trend])
+  const hasTrendData = visibleTrend.length > 0
+  const hasCategoryData = categoryData.length > 0
 
   const totalSpending = categoryData.reduce((total, item) => total + item.value, 0)
 
@@ -63,40 +65,46 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
             </div>
           </CardHeader>
           <CardContent className="pt-4">
-            <div className="h-[220px] w-full sm:h-[320px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={visibleTrend} margin={{ top: 10, right: 0, bottom: 0, left: -20 }}>
-                  <defs>
-                    <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--accent-primary)" stopOpacity={0.56} />
-                      <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0} />
-                    </linearGradient>
-                  </defs>
-                  <CartesianGrid stroke="var(--surface-border)" strokeDasharray="2 8" vertical={false} />
-                  <XAxis dataKey="month" tick={{ fill: 'var(--text-soft)', fontSize: 11 }} tickLine={false} axisLine={false} />
-                  <YAxis hide domain={[0, 'dataMax + 12000']} />
-                  <Tooltip
-                    cursor={{ stroke: 'var(--surface-border)', strokeWidth: 1 }}
-                    contentStyle={{
-                      backgroundColor: 'var(--surface-2)',
-                      borderColor: 'var(--surface-border)',
-                      borderRadius: '10px',
-                      color: 'var(--text-primary)',
-                    }}
-                    formatter={(value) => [formatCurrencyCompact(Number(value ?? 0)), 'Balance']}
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="balance"
-                    stroke="var(--accent-primary)"
-                    strokeWidth={2.2}
-                    fill="url(#balanceGradient)"
-                    dot={{ fill: 'var(--accent-primary-soft)', strokeWidth: 0, r: 2.8 }}
-                    activeDot={{ r: 4.5, fill: 'var(--text-primary)' }}
-                  />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
+            {hasTrendData ? (
+              <div className="h-[220px] w-full sm:h-[320px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={visibleTrend} margin={{ top: 10, right: 0, bottom: 0, left: -20 }}>
+                    <defs>
+                      <linearGradient id="balanceGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="var(--accent-primary)" stopOpacity={0.56} />
+                        <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid stroke="var(--surface-border)" strokeDasharray="2 8" vertical={false} />
+                    <XAxis dataKey="month" tick={{ fill: 'var(--text-soft)', fontSize: 11 }} tickLine={false} axisLine={false} />
+                    <YAxis hide domain={[0, 'dataMax + 12000']} />
+                    <Tooltip
+                      cursor={{ stroke: 'var(--surface-border)', strokeWidth: 1 }}
+                      contentStyle={{
+                        backgroundColor: 'var(--surface-2)',
+                        borderColor: 'var(--surface-border)',
+                        borderRadius: '10px',
+                        color: 'var(--text-primary)',
+                      }}
+                      formatter={(value) => [formatCurrencyCompact(Number(value ?? 0)), 'Balance']}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="balance"
+                      stroke="var(--accent-primary)"
+                      strokeWidth={2.2}
+                      fill="url(#balanceGradient)"
+                      dot={{ fill: 'var(--accent-primary-soft)', strokeWidth: 0, r: 2.8 }}
+                      activeDot={{ r: 4.5, fill: 'var(--text-primary)' }}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="flex h-[220px] w-full items-center justify-center rounded-2xl border border-dashed border-[var(--surface-border)] bg-[var(--surface-2)] px-6 text-center text-sm text-[var(--text-muted)] sm:h-[320px]">
+                No performance data yet. Add transactions to visualize balance trends.
+              </div>
+            )}
           </CardContent>
         </Card>
       </motion.div>
@@ -108,33 +116,39 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
             <CardDescription className="text-sm leading-6">Structural distribution of capital</CardDescription>
           </CardHeader>
           <CardContent className="pt-3">
-            <div className="mx-auto h-[180px] w-[180px] sm:h-[220px] sm:w-[220px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={categoryData}
-                    dataKey="value"
-                    innerRadius={62}
-                    outerRadius={78}
-                    stroke="none"
-                    paddingAngle={2}
-                  >
-                    {categoryData.map((entry, index) => (
-                      <Cell key={entry.category} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: 'var(--surface-2)',
-                      borderColor: 'var(--surface-border)',
-                      borderRadius: '10px',
-                      color: 'var(--text-primary)',
-                    }}
-                    formatter={(value) => [formatCurrencyCompact(Number(value ?? 0)), 'Spend']}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
+            {hasCategoryData ? (
+              <div className="mx-auto h-[180px] w-[180px] sm:h-[220px] sm:w-[220px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={categoryData}
+                      dataKey="value"
+                      innerRadius={62}
+                      outerRadius={78}
+                      stroke="none"
+                      paddingAngle={2}
+                    >
+                      {categoryData.map((entry, index) => (
+                        <Cell key={entry.category} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{
+                        backgroundColor: 'var(--surface-2)',
+                        borderColor: 'var(--surface-border)',
+                        borderRadius: '10px',
+                        color: 'var(--text-primary)',
+                      }}
+                      formatter={(value) => [formatCurrencyCompact(Number(value ?? 0)), 'Spend']}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="mx-auto flex h-[180px] w-[180px] items-center justify-center rounded-full border border-dashed border-[var(--surface-border)] bg-[var(--surface-2)] text-center text-xs text-[var(--text-muted)] sm:h-[220px] sm:w-[220px] sm:text-sm">
+                No category expense data
+              </div>
+            )}
 
             <div className="-mt-2 text-center">
               <p className="text-[2rem] font-semibold leading-none text-[var(--text-primary)] sm:text-[30px]">
@@ -144,18 +158,22 @@ export function PerformanceOverview({ trend, categoryData }: PerformanceOverview
             </div>
 
             <div className="mt-4 space-y-1.5 sm:mt-5 sm:space-y-2">
-              {categoryData.slice(0, 3).map((item, index) => (
-                <div key={item.category} className="flex items-center justify-between text-[0.96rem] sm:text-sm">
-                  <p className="flex items-center gap-2 text-[var(--text-muted)]">
-                    <span
-                      className="h-2.5 w-2.5 rounded-full"
-                      style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }}
-                    />
-                    {item.category}
-                  </p>
-                  <p className="font-medium text-[var(--text-primary)]">{Math.round(item.share)}%</p>
-                </div>
-              ))}
+              {hasCategoryData ? (
+                categoryData.slice(0, 3).map((item, index) => (
+                  <div key={item.category} className="flex items-center justify-between text-[0.96rem] sm:text-sm">
+                    <p className="flex items-center gap-2 text-[var(--text-muted)]">
+                      <span
+                        className="h-2.5 w-2.5 rounded-full"
+                        style={{ backgroundColor: PIE_COLORS[index % PIE_COLORS.length] }}
+                      />
+                      {item.category}
+                    </p>
+                    <p className="font-medium text-[var(--text-primary)]">{Math.round(item.share)}%</p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-sm text-[var(--text-muted)]">Category distribution will appear once expenses are added.</p>
+              )}
             </div>
           </CardContent>
         </Card>

@@ -88,44 +88,50 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
               </button>
             </CardHeader>
             <CardContent className="space-y-4 pt-0">
-              {latest.map((transaction) => {
-                const Icon = iconByCategory[transaction.category] ?? ReceiptText
-                return (
-                  <div
-                    key={transaction.id}
-                    className="flex items-center justify-between gap-2 rounded-xl border border-[var(--surface-border)] bg-[var(--surface-2)] p-2.5 sm:items-start sm:gap-3 sm:p-3"
-                  >
-                    <div className="flex min-w-0 items-center gap-2.5 sm:items-start sm:gap-3">
-                      <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[var(--btn-secondary-bg)] text-[var(--text-primary)] sm:h-9 sm:w-9">
-                        <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              {latest.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-[var(--surface-border)] bg-[var(--surface-2)] p-5 text-center text-sm text-[var(--text-muted)]">
+                  No recent activity yet. Add transactions to build your timeline.
+                </div>
+              ) : (
+                latest.map((transaction) => {
+                  const Icon = iconByCategory[transaction.category] ?? ReceiptText
+                  return (
+                    <div
+                      key={transaction.id}
+                      className="flex items-center justify-between gap-2 rounded-xl border border-[var(--surface-border)] bg-[var(--surface-2)] p-2.5 sm:items-start sm:gap-3 sm:p-3"
+                    >
+                      <div className="flex min-w-0 items-center gap-2.5 sm:items-start sm:gap-3">
+                        <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[var(--btn-secondary-bg)] text-[var(--text-primary)] sm:h-9 sm:w-9">
+                          <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-medium text-[var(--text-primary)] sm:text-[1rem]">
+                            {transaction.description}
+                          </p>
+                          <p className="mt-0.5 text-xs text-[var(--text-muted)]">{formatDate(transaction.date)}</p>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <p className="truncate text-sm font-medium text-[var(--text-primary)] sm:text-[1rem]">
-                          {transaction.description}
+                      <div className="shrink-0 text-right">
+                        <p
+                          className={`text-base font-semibold leading-none sm:text-[1.35rem] ${
+                            transaction.type === 'income' ? 'text-[#A9FFA1]' : 'text-[#FF9AB6]'
+                          }`}
+                        >
+                          {transaction.type === 'income'
+                            ? `+${formatCurrency(transaction.amount)}`
+                            : formatCurrency(-Math.abs(transaction.amount))}
                         </p>
-                        <p className="mt-0.5 text-xs text-[var(--text-muted)]">{formatDate(transaction.date)}</p>
+                        <Badge
+                          variant={transaction.type === 'income' ? 'income' : 'expense'}
+                          className="mt-1 px-2 py-0.5 text-[9px] sm:px-2.5 sm:py-1 sm:text-[10px]"
+                        >
+                          {transaction.type}
+                        </Badge>
                       </div>
                     </div>
-                    <div className="shrink-0 text-right">
-                      <p
-                        className={`text-base font-semibold leading-none sm:text-[1.35rem] ${
-                          transaction.type === 'income' ? 'text-[#A9FFA1]' : 'text-[#FF9AB6]'
-                        }`}
-                      >
-                        {transaction.type === 'income'
-                          ? `+${formatCurrency(transaction.amount)}`
-                          : formatCurrency(-Math.abs(transaction.amount))}
-                      </p>
-                      <Badge
-                        variant={transaction.type === 'income' ? 'income' : 'expense'}
-                        className="mt-1 px-2 py-0.5 text-[9px] sm:px-2.5 sm:py-1 sm:text-[10px]"
-                      >
-                        {transaction.type}
-                      </Badge>
-                    </div>
-                  </div>
-                )
-              })}
+                  )
+                })
+              )}
             </CardContent>
           </Card>
         </motion.div>
@@ -139,7 +145,7 @@ export function RecentActivity({ transactions }: RecentActivityProps) {
           <Card className="upgrade-card overflow-hidden border-[var(--surface-border)]">
             <CardContent className="relative p-5 sm:p-6">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_80%_22%,rgba(255,255,255,0.2)_0%,transparent_46%)]" />
-              <p className="relative text-[30px] font-semibold leading-none text-[var(--text-primary)]">Elevate Your Architecture</p>
+              <p className="relative text-[30px] font-semibold leading-none text-[var(--text-primary)]">Elevate Your Finances</p>
               <p className="relative mt-3 text-sm text-[var(--text-muted)]">
                 Unlock advanced predictive modeling and unlimited vault storage.
               </p>
