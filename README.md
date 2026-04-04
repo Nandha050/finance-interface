@@ -12,6 +12,17 @@ The focus of this project is on:
 - State management
 - Interactive frontend behavior
 
+## 🧭 Overview of Approach
+
+The implementation follows a modular, frontend-first architecture designed for clarity and scalability:
+
+- Built reusable UI primitives and page modules to keep components maintainable
+- Centralized state in Zustand for role, theme, transactions, and filter logic
+- Kept analytics logic in pure helper functions to separate computation from rendering
+- Applied role-based UI and handler-level safeguards for safe frontend RBAC simulation
+- Designed responsive layouts (desktop/tablet/mobile) with consistent interaction patterns
+- Added graceful empty/no-data handling to avoid broken or confusing states
+
 ---
 
 ## 🚀 Features
@@ -83,15 +94,18 @@ Role switching is implemented using frontend state (no backend/authentication).
 ```bash
 src/
 │
+├── assets/           # Logos, hero image, static SVG assets
 ├── components/
-│   ├── dashboard/    # Dashboard, Transactions, Insights, Settings modules
+│   ├── dashboard/    # Page modules, analytics panels, dialogs, empty/skeleton states
 │   ├── layout/       # Topbar and Sidebar
-│   └── ui/           # Reusable UI primitives
-├── store/            # Zustand store
+│   └── ui/           # Reusable primitives (button, card, dialog, select, etc.)
 ├── data/             # Mock transaction data
 ├── lib/              # Analytics, formatting, utility helpers
+├── store/            # Zustand store
 ├── types/            # Shared TypeScript types
+├── App.css
 ├── main.tsx
+├── index.css
 └── App.tsx
 ```
 
