@@ -17,7 +17,30 @@ import { applyTransactionFilters } from '@/lib/analytics'
 import { downloadTextFile, formatDate } from '@/lib/format'
 import { cn, uid } from '@/lib/utils'
 import { useFinanceStore } from '@/store/use-finance-store'
-import type { Transaction } from '@/types/finance'
+import type { NavPage, Transaction } from '@/types/finance'
+
+function filterTransactionsBySearch(transactions: Transaction[], query: string): Transaction[] {
+  const normalizedQuery = query.trim().toLowerCase()
+
+  if (!normalizedQuery) {
+    return transactions
+  }
+
+  return transactions.filter((transaction) => {
+    const searchableText = [
+      transaction.description,
+      transaction.category,
+      transaction.note ?? '',
+      transaction.type,
+      formatDate(transaction.date),
+      String(transaction.amount),
+    ]
+      .join(' ')
+      .toLowerCase()
+
+    return searchableText.includes(normalizedQuery)
+  })
+}
 
 function App() {
   const {
@@ -49,11 +72,45 @@ function App() {
   const [isDialogOpen, setDialogOpen] = useState(false)
   const [dialogMode, setDialogMode] = useState<'add' | 'edit'>('add')
   const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null)
+  const [pageSearchQueries, setPageSearchQueries] = useState<Record<Exclude<NavPage, 'transactions'>, string>>({
+    dashboard: '',
+    insights: '',
+    settings: '',
+  })
 
   const transactionPageTransactions = useMemo(
     () => applyTransactionFilters(transactions, filters),
     [transactions, filters],
   )
+  const dashboardPageTransactions = useMemo(
+    () => filterTransactionsBySearch(transactions, pageSearchQueries.dashboard),
+    [transactions, pageSearchQueries.dashboard],
+  )
+  const insightsPageTransactions = useMemo(
+    () => filterTransactionsBySearch(transactions, pageSearchQueries.insights),
+    [transactions, pageSearchQueries.insights],
+  )
+
+  const activeSearchQuery =
+    activePage === 'transactions'
+      ? filters.searchQuery
+      : activePage === 'dashboard'
+        ? pageSearchQueries.dashboard
+        : activePage === 'insights'
+          ? pageSearchQueries.insights
+          : pageSearchQueries.settings
+
+  function handlePageSearchChange(value: string): void {
+    if (activePage === 'transactions') {
+      setSearchQuery(value)
+      return
+    }
+
+    setPageSearchQueries((previous) => ({
+      ...previous,
+      [activePage]: value,
+    }))
+  }
 
   useEffect(() => {
     if (!isLoading) {
@@ -197,14 +254,6 @@ function App() {
     downloadTextFile('finance-dashboard-export.csv', csv)
   }
 
-  function exportJson(): void {
-    if (role !== 'admin') {
-      return
-    }
-
-    downloadTextFile('finance-dashboard-export.json', JSON.stringify(transactions, null, 2))
-  }
-
   function exportJsonWithData(data: Transaction[]): void {
     if (role !== 'admin') {
       return
@@ -226,12 +275,12 @@ function App() {
       >
         {activePage === 'dashboard' && (
           <DashboardView
-            transactions={transactions}
+            transactions={dashboardPageTransactions}
             role={role}
             theme={theme}
             onAddTransaction={openAddDialog}
-            onExportCSV={() => exportCsv(transactions)}
-            onExportJSON={exportJson}
+            onExportCSV={() => exportCsv(dashboardPageTransactions)}
+            onExportJSON={() => exportJsonWithData(dashboardPageTransactions)}
           />
         )}
 
@@ -259,10 +308,10 @@ function App() {
 
         {activePage === 'insights' && (
           <InsightsView
-            transactions={transactions}
+            transactions={insightsPageTransactions}
             role={role}
-            onExportCSV={() => exportCsv(transactions)}
-            onExportJSON={exportJson}
+            onExportCSV={() => exportCsv(insightsPageTransactions)}
+            onExportJSON={() => exportJsonWithData(insightsPageTransactions)}
           />
         )}
 
@@ -317,8 +366,8 @@ function App() {
           <TopBar
             role={role}
             theme={theme}
-            searchValue={filters.searchQuery}
-            onSearchChange={setSearchQuery}
+            searchValue={activeSearchQuery}
+            onSearchChange={handlePageSearchChange}
             onRoleChange={setRole}
             onThemeChange={setTheme}
             onOpenMobileNav={() => setMobileNavOpen(true)}
@@ -372,8 +421,8 @@ function App() {
               <div className="relative min-w-0">
                 <Search className={cn('pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2', theme === 'light' ? 'text-[#8A97AE]' : 'text-[var(--text-soft)]')} />
                 <Input
-                  value={filters.searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
+                  value={activeSearchQuery}
+                  onChange={(event) => handlePageSearchChange(event.target.value)}
                   placeholder="Search transactions..."
                   className="h-9 pl-9 text-sm"
                 />
